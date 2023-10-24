@@ -1,7 +1,7 @@
 import axios from 'axios';
 import { createAsyncThunk } from '@reduxjs/toolkit';
 
-axios.defaults.baseURL = 'https://task-pro-covc.onrender.com/';
+axios.defaults.baseURL = 'https://task-pro-backend.vercel.app/';
 
 const setAuthHeader = token => {
   axios.defaults.headers.common.Authorization = `Bearer ${token}`;
@@ -11,18 +11,13 @@ const clearAuthHeader = () => {
   axios.defaults.headers.common.Authorization = '';
 };
 
-/*
- * POST @ /auth/register
- * body: { name, email, password }
- */
-
 export const register = createAsyncThunk(
   'auth/register',
   async (credentials, thunkAPI) => {
     try {
       const res = await axios.post('/auth/register', credentials);
-        setAuthHeader(res.data.token);
-        console.log(res.data)
+      setAuthHeader(res.data.token);
+
       return res.data;
     } catch (error) {
       return thunkAPI.rejectWithValue(error.message);
@@ -39,8 +34,8 @@ export const logIn = createAsyncThunk(
   async (credentials, thunkAPI) => {
     try {
       const res = await axios.post('/auth/login', credentials);
-        setAuthHeader(res.data.token);
-        console.log('logined successfully')
+      setAuthHeader(res.data.token);
+
       return res.data;
     } catch (error) {
       return thunkAPI.rejectWithValue(error.message);
@@ -55,7 +50,7 @@ export const logIn = createAsyncThunk(
 export const logOut = createAsyncThunk('auth/logout', async (_, thunkAPI) => {
   try {
     await axios.post('/auth/logout');
-      console.log('logout successfully')
+
     clearAuthHeader();
   } catch (error) {
     return thunkAPI.rejectWithValue(error.message);
@@ -92,56 +87,59 @@ export const refreshUser = createAsyncThunk(
  */
 
 export const updateUserProfile = createAsyncThunk(
-  'auth/profile', async (credentials, thunkAPI) => {
+  'auth/profile',
+  async (credentials, thunkAPI) => {
     const state = thunkAPI.getState();
     const persistedToken = state.auth.token;
 
-     if (persistedToken === null) {
+    if (persistedToken === null) {
       return thunkAPI.rejectWithValue('Unable to fetch user');
-     }
+    }
     try {
       setAuthHeader(persistedToken);
       const res = await axios.patch('/user', credentials);
-      console.log('res', res)
-      console.log('res.data', res.data)
+      console.log('res', res);
+      console.log('res.data', res.data);
       return res.data;
     } catch (error) {
       return thunkAPI.rejectWithValue(error.message);
     }
   }
-)
+);
 
 export const updateUserTheme = createAsyncThunk(
-  "auth/theme", async (credentials, thunkAPI) => {
+  'auth/theme',
+  async (credentials, thunkAPI) => {
     const state = thunkAPI.getState();
     const persistedToken = state.auth.token;
 
-     if (persistedToken === null) {
+    if (persistedToken === null) {
       return thunkAPI.rejectWithValue('Unable to fetch user');
-     }
+    }
     try {
-      setAuthHeader(persistedToken);      
+      setAuthHeader(persistedToken);
       const payload = {
-        "theme": credentials
-      }
+        theme: credentials,
+      };
       const res = await axios.patch('/user/theme', payload);
-      console.log('res', res)
-      console.log('res.data', res.data)
+      console.log('res', res);
+      console.log('res.data', res.data);
       return res.data;
     } catch (error) {
       return thunkAPI.rejectWithValue(error.message);
     }
   }
-)
+);
 
 export const needHelp = createAsyncThunk(
-  "auth/feedback",async (credentials, thunkAPI) => {
+  'auth/feedback',
+  async (credentials, thunkAPI) => {
     const state = thunkAPI.getState();
     const persistedToken = state.auth.token;
 
-     if (persistedToken === null) {
+    if (persistedToken === null) {
       return thunkAPI.rejectWithValue('Unable to fetch user');
-     }
+    }
     try {
       setAuthHeader(persistedToken);
       const res = await axios.post('/feedback/sendFeedback', credentials);
@@ -150,4 +148,4 @@ export const needHelp = createAsyncThunk(
       return thunkAPI.rejectWithValue(error.message);
     }
   }
-)
+);
