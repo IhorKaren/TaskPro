@@ -12,7 +12,6 @@ import { useSelector } from 'react-redux';
 import { ThemeProvider, createTheme } from '@mui/material/styles';
 import getThemePalette from 'components/Theme/getThemePalette';
 import { Container } from './App.styled';
-import CircularWithValueLabel from './loaders/DownloadData';
 import RefreshUser from './loaders/RefreshUser';
 
 const HomePage = lazy(() => import('screens/HomePage/HomePage'));
@@ -32,13 +31,7 @@ export const App = () => {
   }, [dispatch]);
   return (
     <ThemeProvider theme={theme}>
-      <Suspense
-        fallback={
-          <Container>
-            <CircularWithValueLabel />
-          </Container>
-        }
-      >
+      <Suspense fallback={null}>
         {isRefreshing ? (
           <Container>
             <RefreshUser />
